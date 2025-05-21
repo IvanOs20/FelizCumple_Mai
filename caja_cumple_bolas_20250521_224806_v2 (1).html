@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Feliz Cumpleaños Bolas!</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f3e5f5;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .gift-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      cursor: pointer;
+    }
+
+    .box, .lid {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: #8e24aa;
+      border-radius: 20px;
+      transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+
+    .lid {
+      background-color: #ab47bc;
+      height: 60px;
+      top: 0;
+      z-index: 2;
+      transform-origin: bottom center;
+    }
+
+    .ribbon-vertical, .ribbon-horizontal {
+      position: absolute;
+      background-color: gold;
+    }
+
+    .ribbon-vertical {
+      width: 20px;
+      height: 200px;
+      left: 90px;
+      top: 0;
+    }
+
+    .ribbon-horizontal {
+      height: 20px;
+      width: 200px;
+      top: 90px;
+      left: 0;
+    }
+
+    .message {
+      display: none;
+      max-width: 90%;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.4em;
+      color: #333;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="gift-container" onclick="openGift()" id="gift">
+    <div class="box"></div>
+    <div class="lid" id="lid"></div>
+    <div class="ribbon-vertical"></div>
+    <div class="ribbon-horizontal"></div>
+  </div>
+
+  <div class="message" id="message">
+    <p><strong>¡Feliz cumpleaños, Bolas! 🎉</strong></p>
+    <p>Aunque estemos lejos, este regalo digital llega con toda la intención: hacerte sonreír, recordarte lo chingón que eres y celebrar a lo grande. Hoy no hay pastel, pero sí hay confeti, ritmo y cariño.</p>
+    <p><strong>¡Salud por ti, compa! 🎂🎶</strong></p>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+  <audio id="song" src="https://archive.org/download/a-1-el-gran-varon-willie-colon-cr-01/A1-El%20Gran%20Var%C3%B3n%20-%20Willie%20Col%C3%B3n-cr_01.flac" preload="auto"></audio>
+
+  <script>
+    function openGift() {
+      const lid = document.getElementById("lid");
+      const gift = document.getElementById("gift");
+      lid.style.transform = "rotateX(150deg) translateY(-100px)";
+      lid.style.opacity = "0";
+      setTimeout(() => {
+        gift.style.display = "none";
+        document.getElementById("message").style.display = "block";
+        document.getElementById("song").play();
+        startConfetti();
+      }, 800);
+    }
+
+    // Confetti effect
+    const canvas = document.getElementById("confetti-canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const pieces = [];
+    for (let i = 0; i < 150; i++) {
+      pieces.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        size: Math.random() * 10 + 5,
+        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+        speed: Math.random() * 3 + 2,
+        drift: (Math.random() - 0.5) * 2,
+      });
+    }
+
+    function startConfetti() {
+      function update() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.y += p.speed;
+          p.x += p.drift;
+          if (p.y > canvas.height) {
+            p.y = -p.size;
+            p.x = Math.random() * canvas.width;
+          }
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        });
+        requestAnimationFrame(update);
+      }
+      update();
+    }
+  </script>
+
+</body>
+</html>
